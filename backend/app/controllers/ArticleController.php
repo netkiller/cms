@@ -42,7 +42,7 @@ class ArticleController extends ControllerBase {
 				}
 			}
 		}
-		$where['division_id'] = $this->Division_id;//Division::getID();
+		$where['site_id'] = $this->Division_id;//Division::getID();
 		$where['status'] = 'Enabled';
 		$appendix = array('page'=>$page, 'pageSize'=>$pageSize, 'order'=>'article.id desc');
 
@@ -73,9 +73,9 @@ class ArticleController extends ControllerBase {
 		$page = $list->getPaginate();
 		//$page = $paginator->getPaginate();
 		//echo '<pre>';print_r($page);exit;
-		$divisionCategory = $this->getDivisionCategory();
+		$category = $this->getCategory();
 
-        $this->view->divisionCategory = $divisionCategory;
+        $this->view->category = $category;
 		$page->pageSize = $appendix['pageSize'];
 		$this->view->language = $this->language;
 		$this->view->page = $page;
@@ -92,54 +92,63 @@ class ArticleController extends ControllerBase {
             "bind" => array($id)
         );
 		$article = Article::findFirst($parameters);
-		$parameters = array(
-            "article_id = ?0",
-            "bind" => array($id)
-        );
-		$images = Images::findFirst($parameters);
+
+		// $article->save();
+
+		$category = $this->getCategory();
+		// $parameters = array(
+        //     "article_id = ?0",
+        //     "bind" => array($id)
+        // );
+		// $images = Images::findFirst($parameters);
 		if($this->request->isPost()){
+			// print_r($article);
+			
 			//$form = new ArticleForm();
-			$article->id = $this->request->getPost('id');
+			// $article->id = $this->request->getPost('id');
 			$article->title = $this->request->getPost('title', 'trim');
 			$article->content = $this->request->getPost('content', 'trim');
-			$oriPath = '';
-			$imagesId = 0;
-			$imageVal = $this->request->getPost('hdimage', 'trim');
-			if($imageVal){
-				$image = explode(';', $imageVal);
-				if($image){
-					$oriPath = $image[0];
-					$imagesId = $image[1];
-				}
-			}
-			if($images){
-				$images->id = $imagesId;
-				$images->article_id = $article->id;
-				$images->url = $this->uploadImage($article->id, $oriPath);
-				if($images->url){
-					$images->save();
-				}
 
-			}
-			else{
-				$images = new Images();
-				$images->article_id = $article->id;
-				$images->url = $this->uploadImage($article->id, $oriPath);
-				if($images->url){
-					$images->save();
-				}
-			}
+			// die($article->title);
 
-            $article->keyword = $this->request->getPost('keyword', 'trim');
-            $article->description = $this->request->getPost('description', 'trim');
-            $article->language = $this->request->getPost('language');
-            $article->visibility = $this->request->getPost('visibility');
-            //$category_id = $this->request->getPost('category_id');
-            $article->status = 'Enabled';
-            $article->division_category_id = $this->request->getPost('division_category_id');
-            $article->division_id = $this->Division_id;
-            $article->author = $this->request->getPost('author', 'trim');
-            $article->share = $this->request->getPost('share');
+			// $oriPath = '';
+			// $imagesId = 0;
+			// $imageVal = $this->request->getPost('hdimage', 'trim');
+			// if($imageVal){
+			// 	$image = explode(';', $imageVal);
+			// 	if($image){
+			// 		$oriPath = $image[0];
+			// 		$imagesId = $image[1];
+			// 	}
+			// }
+			// if($images){
+				// $images->id = $imagesId;
+				// $images->article_id = $article->id;
+				// $images->url = $this->uploadImage($article->id, $oriPath);
+				// if($images->url){
+				// 	$images->save();
+				// }
+
+			// }else{
+				// $images = new Images();
+				// $images->article_id = $article->id;
+				// $images->url = $this->uploadImage($article->id, $oriPath);
+				// if($images->url){
+				// 	$images->save();
+				// }
+			// }
+
+            // $article->keyword = $this->request->getPost('keyword', 'trim');
+            // $article->description = $this->request->getPost('description', 'trim');
+            // $article->language = $this->request->getPost('language');
+            // $article->visibility = $this->request->getPost('visibility');
+            // $article->category_id = $this->request->getPost('category_id');
+            // $article->status = 'Enabled';
+            
+            // $article->site_id = $this->Division_id;
+            // $article->author = $this->request->getPost('author', 'trim');
+			// $article->share = $this->request->getPost('share');
+			
             /*if(!$form->isValid($this->request->getPost())){
 	            foreach ($form->getMessages() as $message) {
 	                $this->flash->error($message);
@@ -150,18 +159,17 @@ class ArticleController extends ControllerBase {
             	//$form->clear();
             	//$this->response->redirect('/article');
             	$this->view->successMessage = $this->tipsToRedirect->modalSuccessTips('修改成功', '/article');
-            }
-            else{
+            } else{
 	            $this->view->errorMessage = $article->getMessages();
 	            /*foreach ($article->getMessages() as $message) {
 	                $this->flash->error($message);
 	            }*/
             }
 		}
-		$divisionCategory = $this->getDivisionCategory();
-        $this->view->divisionCategory = $divisionCategory;
+		
+        $this->view->category = $category;
 		$this->view->article = $article;
-		$this->view->images = $images;
+		// $this->view->images = $images;
         $this->view->language = $this->language;
 	}
 
@@ -207,11 +215,10 @@ class ArticleController extends ControllerBase {
 			$article->description = $this->request->getPost('description', 'trim');
 			$article->language = $this->request->getPost('language');
 			$article->visibility = $this->request->getPost('visibility');
-			//$category_id = $this->request->getPost('category_id');
+			$article->category_id = $this->request->getPost('category_id');
 			$article->status = 'Enabled';
-			$article->division_category_id = $this->request->getPost('division_category_id');
 			$article->tag = $this->request->getPost('tag');
-			$article->division_id = $this->Division_id;//
+			$article->site_id = $this->Division_id;//
 			$article->author = $this->request->getPost('author', 'trim');
 			$article->share = $this->request->getPost('share');
 			/*if(!$form->isValid($this->request->getPost())){
@@ -259,8 +266,8 @@ class ArticleController extends ControllerBase {
 		}
 
 		$this->view->cateId = $cateId;
-		$divisionCategory = $this->getDivisionCategory();
-        $this->view->divisionCategory = $divisionCategory;
+		$category = $this->getCategory();
+        $this->view->category = $category;
         $this->view->language = $this->language;
 	}
 
@@ -373,10 +380,10 @@ class ArticleController extends ControllerBase {
 	 * 获取事业部分类
 	 * Enter description here ...
 	 */
-	private function getDivisionCategory(){
+	private function getCategory(){
 		//$this->divisionId = Division::getID();
-		return $divisionCategory = Category::find(
-            "division_id = {$this->Division_id}"
+		return $ategory = Category::find(
+            "site_id = {$this->Division_id}"
         );
 	}
 

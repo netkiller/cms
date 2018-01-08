@@ -21,7 +21,7 @@ class CategoryController extends ControllerBase
 				}
 			}
 		}
-                $where['division_id'] = $this->Division_id;
+                $where['site_id'] = $this->Division_id;
                 if($where){
 			foreach($where as $k=>$v){
 				if($k=='language'){
@@ -81,7 +81,7 @@ class CategoryController extends ControllerBase
             "id = '{$id}'"
         );
         $category = Category::find(
-            "division_id = '{$Division_id}' and language = '{$cates->language}'"
+            "site_id = '{$Division_id}' and language = '{$cates->language}'"
         );
         $this->view->setVar('pages',$category);
         $this->view->setVar('cates',$cates);
@@ -97,11 +97,11 @@ class CategoryController extends ControllerBase
         }
         if($cates){
             $category = Category::find(
-                "division_id = '{$id}' and language = '{$cates->language}'"
+                "site_id = '{$id}' and language = '{$cates->language}'"
             );
         }else{
             $category = Category::find(
-                "division_id = '{$id}'"
+                "site_id = '{$id}'"
             );
         }
         
@@ -188,7 +188,7 @@ class CategoryController extends ControllerBase
         
         $category = new Category();
         $category->name = $this->request->getPost('name');
-        $category->division_id = $Division_id;
+        $category->site_id = $Division_id;
         $category->visibility = $this->request->getPost('visibility'); 
         $category->language = $this->request->getPost('hd_language') != '' ? $this->request->getPost('hd_language') : $this->request->getPost('language'); 
         $category->path = '/';

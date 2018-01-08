@@ -3,8 +3,8 @@
 class Article extends \Phalcon\Mvc\Model
 {
 	public function initialize($ctime = false){
-		//$this->hasOne('id', 'Category', 'division_category_id');
-		$this->hasOne("division_category_id", "Category", "id");//{0}主表关联子表的ID，{1}关联的子表，{2}子表ID
+		$this->hasOne('site_id', 'Site', 'id');
+		$this->hasOne("category_id", "Category", "id");//{0}主表关联子表的ID，{1}关联的子表，{2}子表ID
 		$this->skipAttributes($ctime ?  array('from', 'mtime') : array('from', 'ctime', 'mtime'));
 	}
 	
@@ -23,17 +23,17 @@ class Article extends \Phalcon\Mvc\Model
 					->from("article");
 		$strWhere = null;
 		if($where){
-			$divisionCategoryId = array();
-			if(isset($where['division_category_id']) && $where['division_category_id']){
-				/*$phql = "SELECT category.id FROM category where category.parent_id={$where['division_category_id']}";
+			$siteCategoryId = array();
+			if(isset($where['site_id']) && $where['site_id']){
+				/*$phql = "SELECT category.id FROM category where category.parent_id={$where['site_category_id']}";
 				$categoryId = $modelsManager->executeQuery($phql);
 				//echo '<pre>';
 				foreach ($categoryId as $category){
-					$divisionCategoryId[] = $category->id;
+					$siteCategoryId[] = $category->id;
 				}*/
-				//print_r($divisionCategoryId);exit;
-				//$divisionCategoryId = Category::selectCategoryId($modelsManager, $where['division_category_id']);
-				Category::getSubIds($where['division_category_id'], $divisionCategoryId);
+				//print_r($siteCategoryId);exit;
+				//$siteCategoryId = Category::selectCategoryId($modelsManager, $where['site_category_id']);
+				Category::getSubIds($where['site_id'], $siteCategoryId);
 			}
 			foreach($where as $k=>$v){
 				if($k=='title'){
@@ -45,11 +45,11 @@ class Article extends \Phalcon\Mvc\Model
 				elseif($k=='ectime'){
 					$strWhere[] = "article.ctime <= '{$v} 23:59:59'";
 				}
-				elseif($k=='division_category_id'){
-					$categoryIdStr = implode(',', $divisionCategoryId);
-					$str = "article.division_category_id={$v}";
+				elseif($k=='site_category_id'){
+					$categoryIdStr = implode(',', $siteCategoryId);
+					$str = "article.site_category_id={$v}";
 					if($categoryIdStr){
-						$str = "({$str} or article.division_category_id in ({$categoryIdStr}))";
+						$str = "({$str} or article.site_category_id in ({$categoryIdStr}))";
 					}
 					$strWhere[] = $str;
 				}
@@ -60,7 +60,7 @@ class Article extends \Phalcon\Mvc\Model
 			$strWhere = implode(' AND ', $strWhere);
 		}
 		$builder = $builder->where($strWhere)
-					//->leftjoin("category", "category.id = article.division_category_id")
+					//->leftjoin("category", "category.id = article.site_category_id")
 					->orderby($appendix['order']);
 		//echo '<pre>';print_r($builder);exit;
 		return $paginator = new Phalcon\Paginator\Adapter\QueryBuilder(array(
@@ -119,29 +119,29 @@ class Article extends \Phalcon\Mvc\Model
 	 * @param unknown_type $new
 	 * @param unknown_type $where
 	 */
-	static function modifyArticle($modelsManager, $new = array(), $where = array()){
-		$newVal = null;
-		if($new){
-			foreach($new as $k => $v){
-				$newVal[] = "article.{$k} = '{$v}'";
-			}
-			$newVal = implode(',', $newVal);
-		}
-		$strWhere = null;
-		if($where){
-			foreach ($where as $k => $v){
-				$strWhere[] = "article.{$k} = '{$v}'";
-			}
-			$strWhere = implode(' AND ', $strWhere);
-		}
-		if($newVal && $strWhere){
-			$phql = "UPDATE article SET {$newVal} WHERE {$strWhere}";
-			$status = $modelsManager->executeQuery($phql);
-		    //print_r($status);exit;
-		    return $status;
-		}
-		return false;
-	}
+	// static function modifyArticle($modelsManager, $new = array(), $where = array()){
+	// 	$newVal = null;
+	// 	if($new){
+	// 		foreach($new as $k => $v){
+	// 			$newVal[] = "article.{$k} = '{$v}'";
+	// 		}
+	// 		$newVal = implode(',', $newVal);
+	// 	}
+	// 	$strWhere = null;
+	// 	if($where){
+	// 		foreach ($where as $k => $v){
+	// 			$strWhere[] = "article.{$k} = '{$v}'";
+	// 		}
+	// 		$strWhere = implode(' AND ', $strWhere);
+	// 	}
+	// 	if($newVal && $strWhere){
+	// 		$phql = "UPDATE article SET {$newVal} WHERE {$strWhere}";
+	// 		$status = $modelsManager->executeQuery($phql);
+	// 	    //print_r($status);exit;
+	// 	    return $status;
+	// 	}
+	// 	return false;
+	// }
 
 	/*public function beforeSave(){
     	if($this->title==''){
@@ -152,9 +152,9 @@ class Article extends \Phalcon\Mvc\Model
 	        $message = new Message($text, $field, $type, $code);
 	        $this->appendMessage($message);
     	}
-    	if($this->division_category_id==''){
+    	if($this->site_category_id==''){
     		$text = "请选择分类";
-	        $field = "division_category_id";
+	        $field = "site_category_id";
 	        $type = "InvalidValue";
 	        $code = 103;
 	        $message = new Message($text, $field, $type, $code);

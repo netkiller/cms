@@ -1,10 +1,15 @@
 
 <?php
 
-class SiteController extends ControllerBase
-{
+class SiteController extends \Phalcon\Mvc\Controller
+{
+    // public function initialize() {
+    	//$division = new Division();
+        //$this->divisionId = Division::getID();
+        // parent::initialize();
+    // }
     public function indexAction(){
-        $site = Division::find($this->Division_id);
+        $site = Site::find();
 
         $this->view->setVar('site',$site);
     }

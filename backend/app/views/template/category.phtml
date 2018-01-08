@@ -1,4 +1,4 @@
-<?php $cates_arr = $this->objToArray->ohYeah(Category::find('division_id='.$division_id));
+<?php $cates_arr = $this->objToArray->ohYeah(Category::find('site_id='.$site_id));
 			$items = $this->tree->_tree($cates_arr, $parent_id = 0, $level = 0); 
 ?><ul class="breadcrumb">
 				<li>
@@ -49,7 +49,7 @@
 								<?php 
                                 	echo \Phalcon\Tag::selectStatic(array(
                                 			"template_id[]",
-                                			array(),//Template::find("status= 'Enabled' AND division_id='{$division_id}'"),
+                                			array(),//Template::find("status= 'Enabled' AND site_id='{$site_id}'"),
                                 			"using" => array("id", "name"),
                                 			"value"=>'',
 											"id"=>'template_id',

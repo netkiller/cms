@@ -3,8 +3,8 @@ class TemplateController extends ControllerBase
 {
 	public function initialize(){
 		parent::initialize();
-		$this->division_id = $this->Division_id;
-		$this->view->division_id = $this->division_id;
+		$this->site_id = $this->Division_id;
+		$this->view->site_id = $this->site_id;
 		$this->view->frontend_baseUrl = $this->url;
 		$this->view->type_name = array(
 				'Category'=>'分类',
@@ -39,7 +39,7 @@ class TemplateController extends ControllerBase
 				}
 			}
 		}
-		$where['division_id'] = $this->division_id;
+		$where['site_id'] = $this->site_id;
 		$where[] = 'template.status<>\'Deleted\'';
 		
 		$appendix = array('page'=>$page,'pageSize'=>$pageSize);
@@ -310,7 +310,7 @@ class TemplateController extends ControllerBase
 			$relation = $this->request->getPost('relation'); 
 			
 			$not = $relation ? '' : ' NOT ';
-			$sql="SELECT id,name,`type` FROM template WHERE `status`='Enabled' AND division_id = '{$this->division_id}' AND id {$not} 
+			$sql="SELECT id,name,`type` FROM template WHERE `status`='Enabled' AND site_id = '{$this->site_id}' AND id {$not} 
 					in(SELECT template_id FROM category_has_template WHERE category_id = '{$category_id}')";
 			$list = $this->db->fetchAll($sql,PDO::FETCH_ASSOC);
 			$new_list = array();

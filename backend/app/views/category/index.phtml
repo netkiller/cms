@@ -43,6 +43,7 @@
                         <th>分类描述</th>
                         <th>语言</th>
                         <th>可见性</th>
+                        <th>类型</th>
                         <th>创建时间</th>
                         <th>修改时间</th>
                         <th>操作</th>
@@ -72,6 +73,7 @@
                             <td class="center">
                                 <?php echo $vs['visibility']=='Visible'?'<span class="label label-success">显示</span>':'<span class="label label-error">隐藏</span>';?>
                             </td>
+                            <td><?php echo $vs['type']; ?></td>
                             <td><?php echo $vs['ctime']; ?></td>
                             <td><?php echo $vs['mtime']; ?></td>
                             <td class="center">

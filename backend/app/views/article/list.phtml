@@ -32,10 +32,10 @@
 										<option value="en"<?php if(isset($where['language']) && $where['language']=='en'):?> selected="selected"<?php endif;?>>EN</option>
 									</select>
 									事业部-->分类：
-									<select name="division_category_id" id="division_category_id" style="width:auto;">
+									<select name="category_id" id="category_id" style="width:auto;">
 									  	<option value="">全部</option>
 										<?php
-					                    $cates_arr = $this->objToArray->ohYeah($divisionCategory);
+					                    $cates_arr = $this->objToArray->ohYeah($category);
 					                    $items = $this->tree->_tree($cates_arr, $parent_id = 0, $level = 0);
 					                    foreach ($items as $vs) :
 					                        ?>

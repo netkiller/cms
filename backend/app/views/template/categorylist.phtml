@@ -1,8 +1,8 @@
 			<?php
-			$cates_arr = $this->objToArray->ohYeah(Category::find("division_id='{$division_id}'"));
+			$cates_arr = $this->objToArray->ohYeah(Category::find("site_id='{$site_id}'"));
 			$items = $this->tree->_tree($cates_arr, $parent_id = 0, $level = 0);
 			
-			$cates_arr_select = $this->objToArray->ohYeah(Category::find("division_id='{$division_id}' AND visibility != 'Hidden' "));
+			$cates_arr_select = $this->objToArray->ohYeah(Category::find("site_id='{$site_id}' AND visibility != 'Hidden' "));
 			$items_select = $this->tree->_tree($cates_arr_select, $parent_id = 0, $level = 0);
 			
 			if(!isset($isPartView)):?>
